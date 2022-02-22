@@ -1,0 +1,13 @@
+[
+    {
+        "book_id": 4,
+        "tittle": "Pride And Prejudice",
+        "image": "images/pride-and-prejudice.jpg",
+        "slug": "pride-and-prejudice",
+        "author": "Jane Auston",
+        "desc": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras congue hendrerit maximus. Fusce massa velit, mollis et pharetra id, finibus et ante. Proin neque ex, fringilla ut ligula vitae, euismod venenatis ligula. Etiam sodales urna eu urna ultrices auctor. Sed sed condimentum mauris, quis feugiat odio. Phasellus risus dolor, tempus eget libero ac, faucibus pretium est. Curabitur tincidunt leo vitae mattis porttitor. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Ut tincidunt non orci et dictum. Praesent et vulputate diam. Proin erat mi, euismod nec viverra vel, interdum a felis. Nullam vel dapibus nisl.",
+        "year": 1813,
+        "pages": 226,
+        "price": 576
+    }
+]
