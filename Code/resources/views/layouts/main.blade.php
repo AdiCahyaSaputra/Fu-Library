@@ -51,20 +51,21 @@
   <div class="w-full h-full md:h-screen bg-gray-100">
     <div class="bg-gray-100 grid grid-cols-12 gap-2 h-full">
       @if(Request::path() != 'login' && Request::path() != 'register')
-      <div class="md:col-span-2 md:block md:relative md:left-0 bg-white fixed w-2/3 md:w-auto h-full top-0 -left-full z-30 " id="sidebar">
+      <div class="md:col-span-2 md:block md:relative md:left-0 bg-white fixed w-2/3 md:w-auto inset-y-0 -left-full z-30 " id="sidebar">
         <div class="py-5 bg-gray-700" onclick="window.location.href = '/dashboard';">
           <div class="text-center">
             <?php // $pecahSTR = explode(' ', auth()->user()->profile->nama); $nama = $pecahSTR[0]; ?>
-            <h4 class="font-bold text-md md:text-sm text-white uppercase">{{ auth()->user()->name }}</h4>
-            <div class="py-2 px-4 bg-white rounded-full text-gray-700 inline-block text-xs mt-2 uppercase">
-              SMK-RPL
+            <h4 class="font-bold md:text-sm text-white uppercase mr-1 inline">BOOK</h4>
+            <div class="px-2 py-1 bg-white rounded-md text-gray-700 text-xs uppercase inline-block">
+              SHOP
             </div>
           </div>
+
         </div>
         <ul class="text-sm md:text-md">
-          
-          <a href="/home" class="relative mt-5 pl-5  py-4 inline-block w-full  {{ Request::is('/') || Request::is('home*') ? 'text-gray-700 font-bold' : 'text-gray-400 hover:text-gray-700' }}">
-            @if (Request::is('/') || Request::is('home*'))
+
+          <a href="/home" class="relative mt-5 pl-5  py-4 inline-block w-full  {{ Request::is('/') || Request::is('home*') || Request::is('checkout*') ? 'text-gray-700 font-bold' : 'text-gray-400 hover:text-gray-700' }}">
+            @if (Request::is('/') || Request::is('home*') || Request::is('checkout*'))
             <div class="absolute bg-gray-700 w-2 h-full top-0 left-0"></div>
             @endif
             Home
@@ -81,15 +82,31 @@
             @endif
             Bookmark
           </a>
+
+          <a href="/credits" class="{{ Request::is('credits*') ? 'text-gray-700 font-bold' : 'hover:text-gray-700 text-gray-400' }} relative mt-5 pl-5 py-4 inline-block w-full">
+            @if (Request::is('credits*'))
+            <div class="absolute bg-gray-700 w-2 h-full top-0 left-0"></div>
+            @endif
+            Credits
+          </a>
+          <div class="px-2">
+            <div class="relative bg-gray-400 mt-5 px-5 py-4 inline-block w-full flex rounded-md hover:bg-gray-600 space-x-2 items-center" onclick="clickLogout()">
+              <i data-feather="log-out" class="w-8 h-8 p-2 rounded-md bg-white"></i>
+              <form action="/logout" method="post">
+                @csrf
+                <button type="submit" class="text-white" id="btnLogout">Log Out</button>
+              </form>
+
+            </div>
+
+          </div>
+
+
         </ul>
 
-        <form action="/logout" method="post">
-          @csrf
-          <button type="submit" class="fixed w-2/3 md:absolute bottom-0 bg-gray-200 hover:bg-gray-300 text-gray-700 p-4 md:w-full inline-block text-sm">Log Out</button>
-        </form>
       </div>
       @endif
-      <div class="col-span-12 bg-white {{ Request::path() != 'login' && Request::path() != 'register' ? 'p-4 md:col-span-8' : '' }} min-h-screen overflow-auto no-scrollbar relative" id="toggle-sidebar">
+      <div class="col-span-12 bg-white {{ Request::path() != 'login' && Request::path() != 'register' ? 'p-4 md:col-span-8' : '' }} min-h-screen overflow-auto no-scrollbar relative pb-32" id="toggle-sidebar">
         @if (Request::path() != "login" && Request::path() != "register" && Request::path() != 'home/c/*')
         <div class="absolute inset-0 bg-black bg-opacity-50 hidden z-10" id="overlay-side"></div>
         <div class="cursor-pointer flex flex-col items-end w-16 h-16 py-2 bg-transparent absolute right-4 top-4 md:hidden" id="btn-side">
@@ -112,6 +129,12 @@
   <!-- Javascript -->
   <script src="{{ asset('js/sidebar.js') }}"></script>
   <!-- choose one -->
+  <script>
+    const btnLogout = document.querySelector('#btnLogout');
+    function clickLogout() {
+      btnLogout.click();
+    }
+  </script>
   <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
   <script>
     feather.replace()

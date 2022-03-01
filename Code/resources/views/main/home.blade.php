@@ -19,7 +19,9 @@
   </div>
   <div class="uppercase">
     <h1 class="text-gray-700 text-sm font-semibold">{{ auth()->user()->name }}</h1>
-    <p class="text-xs text-gray-500 font-medium">{{ auth()->user()->jurusan->name }}</p>
+    <p class="text-xs text-gray-500 font-medium">
+      {{ auth()->user()->jurusan->name }}
+    </p>
   </div>
 </div>
 
@@ -27,7 +29,7 @@
 
 <!-- Welcome message -->
 @if(Request::path('home') && !Request::has('search'))
-<div class="mt-4 md:mt-0 py-2 pl-4 pr-2 bg-gray-700 flex justify-between">
+<div class=" mt-4 py-2 pl-4 pr-2 bg-gray-700 flex justify-between">
   <div>
     <h1 class="text-md font-semibold text-white" id="box-greeting">Welcome {{ explode(" ", auth()->user()->name)[0] }}!</h1>
     <p class="text-sm text-white/70">
@@ -54,7 +56,7 @@
 
 <!-- Search Query Message -->
 @if(Request::has('search'))
-<div class="mt-8 md:mt-0 py-2 pl-4 pr-2 bg-gray-700 rounded-md flex justify-between">
+<div class="mt-4 py-2 pl-4 pr-2 bg-gray-700 rounded-md flex justify-between">
   <div>
     <p class="text-md text-white font-semibold">
       Did not found what you want?<br>
@@ -84,25 +86,25 @@
 <!-- Category items is empty -->
 @if(Request::is('home/c*'))
 @if($books->isEmpty())
-<h1 class="text-sm mt-4 p-2 bg-gray-300 text-gray-500 text-center font-semibold">Books Not Found!</h1>
+<h1 class="rounded-md text-sm mt-4 p-2 bg-gray-300 text-gray-500 text-center font-semibold">Books Not Found!</h1>
 @endif
 @endif
 
 <!-- Search items is empty -->
 @if(Request::has('search'))
 @if($books->isEmpty())
-<h1 class="text-sm mt-4 p-2 bg-gray-300 text-gray-500 text-center font-semibold">Books Not Found!</h1>
+<h1 class="rounded-md text-sm mt-4 p-2 bg-gray-300 text-gray-500 text-center font-semibold">Books Not Found!</h1>
 @endif
-  
+
 @endif
 
 <!-- Book -->
 @foreach( $books as $book )
-<div class="mt-2 grid grid-cols-12 gap-px bg-white p-2 rounded-md border-l border-t border-gray-200 shadow-md hover:bg-gray-300">
+<div class="flex items-center mt-2 grid grid-cols-12 gap-px bg-white p-2 rounded-md border-l border-t border-gray-200 shadow-md hover:bg-gray-300">
   <a href="/home/{{ $book->slug }}" class="col-span-4 md:col-span-2 overflow-hidden rounded-md h-max shadow-sm">
     <img src="{{ asset($book->image) }}" alt="">
   </a>
-  <a href="/home/{{ $book->slug }}" class="col-span-8 md:col-span-10 p-2 flex flex-col justify-between">
+  <a href="/home/{{ $book->slug }}" class="col-span-8 md:col-span-10 p-2 flex flex-col justify-between h-full">
     <div>
       <h1 class="text-lg text-gray-700 font-bold">{{ $book->tittle }}</h1>
       <p class="text-sm text-gray-500">
@@ -134,79 +136,35 @@
 
   <div class="relative mt-4 overflow-hidden">
     @for ($i = 0; $i < 3; $i++)
-      <div class=" w-full grid grid-cols-12 gap-4 {{ $i == 0 ? 'active relative top-0 right-0' : 'absolute top-0 -right-[calc(100%+1rem)]' }} slide-items bg-gray-600 p-2 md:p-4 rounded-md">
-      <div class="col-span-4 h-40 md:col-span-3 md:h-60 bg-white bg-cover bg-center border-2 border-white"
-        style="background-image: url('{{ asset($newBooks[$i]->image )}}')"></div>
-      <div class="col-span-8 md:col-span-9 max-h-40">
-        <h1 class="text-white text-lg font-bold">{{ $newBooks[$i]->tittle }}</h1>
-        <p class="text-white/50">
-          {{ $newBooks[$i]->year }}
-        </p>
-        <p class="text-sm text-white/80 break-all line-clamp-3">
-          {{ $newBooks[$i]->desc }}
-        </p>
+      <div class="w-full grid grid-cols-12 gap-px {{ $i == 0 ? 'active relative top-0 right-0' : 'absolute top-0 -right-[calc(100%+1rem)]' }} slide-items bg-gray-600 p-2 rounded-md flex items-center ">
+        <a href="/home/{{ $newBooks[$i]->slug }}" class="col-span-4 md:col-span-2 overflow-hidden rounded-md h-max shadow-sm">
+          <img src="{{ asset($newBooks[$i]->image) }}" alt="">
+        </a>
+        <a href="/home/{{ $newBooks[$i]->slug }}" class="col-span-8 md:col-span-10 p-2 flex flex-col justify-between h-full">
+          <div>
+            <h1 class="text-lg text-white font-bold">{{ $newBooks[$i]->tittle }}</h1>
+            <p class="text-sm text-gray-300">
+              {{ $newBooks[$i]->year }}
+            </p>
+            <p class="text-xs mt-2 text-gray-400 line-clamp-3 break-all">
+              {{ $newBooks[$i]->desc }}
+            </p>
+          </div>
+          <div>
+            <p class="mt-2 py-2 px-4 inline-block bg-gray-700 text-white rounded-md text-xs font-bold">
+              {{ $newBooks[$i]->author }}
+            </p>
 
-        <h1 class="py-2 px-4 bg-white/30 text-white font-semibold text-sm mt-2 inline-block">{{ $newBooks[$i]->author }}</h1>
+          </div>
+        </a>
       </div>
+      @endfor
     </div>
-    @endfor
-<!--
-    <div class="w-full grid grid-cols-12 gap-4 absolute top-0 -right-[calc(100%+1rem)] slide-items bg-gray-600 p-2 md:p-4 rounded-md">
-      <div class="col-span-4 h-40 md:col-span-3 md:h-60 bg-white bg-cover bg-center border-2 border-white"
-        style="background-image: url('{{ asset($newBooks[1]->image )}}')"></div>
-      <div class="col-span-8 md:col-span-9">
-        <h1 class="text-white text-lg font-bold">{{ $newBooks[1]->tittle }}</h1>
-        <p class="text-white/50">
-          {{ $newBooks[1]->year }}
-        </p>
-        <p class="text-sm text-white/80 break-all line-clamp-3">
-          {{ $newBooks[1]->desc }}
-        </p>
-        <h1 class="py-2 px-4 inline-block bg-white/30 text-white font-semibold text-sm mt-2">{{ $newBooks[1]->author }}</h1>
-      </div>
-    </div>
-
-    <div class=" w-full grid grid-cols-12 gap-4 absolute top-0 -right-[calc(100%+1rem)] slide-items bg-gray-600 p-2 md:p-4 rounded-md">
-      <div class="col-span-4 h-40 md:col-span-3 md:h-60 bg-white bg-cover bg-center border-2 border-white"
-        style="background-image: url('{{ asset($newBooks[2]->image )}}')"></div>
-      <div class="col-span-8 md:col-span-9">
-        <h1 class="text-white text-lg font-bold">{{ $newBooks[2]->tittle }}</h1>
-        <p class="text-white/50">
-          {{ $newBooks[2]->year }}
-        </p>
-        <p class="text-sm text-white/80 break-all line-clamp-3">
-          {{ $newBooks[2]->desc }}
-        </p>
-        <h1 class="py-2 px-4 inline-block bg-white/30 text-white font-semibold text-sm mt-2">{{ $newBooks[2]->author }}</h1>
-      </div>
-    </div>
-
+    @endif
   </div>
--->
 </div>
-@endif
 <script>
- 
- /**
-  // box greet
-  let boxGreet = document.querySelector('#box-greeting');
-  let curr = new Date();
-  let hour = curr.getHours();
 
-  if (hour < 12) {
-    // pagi
-    boxGreet.innerHTML = "Have a nice day, {{ explode(' ', auth()->user()->name)[0] }}";
-  } else if (hour >= 12 && hour <= 14) {
-    // siang
-    boxGreet.innerHTML = "Lunch time, {{ explode(' ', auth()->user()->name)[0] }}"
-  } else if (hour > 14 && hour <= 18) {
-    // sore
-    boxGreet.innerHTML = "Get bored, right? {{ explode(' ', auth()->user()->name)[0] }}"
-  } else {
-    // malam
-    boxGreet.innerHTML = "Nightmare is here, {{ explode(' ', auth()->user()->name)[0] }}"
-  }
-  **/
   // Search bar
   const searchBar = document.querySelector('#search');
   const searchBtn = document.querySelector('#btnSubmit');
@@ -284,28 +242,28 @@
   // box
   const btnBox = document.querySelector('#btn-box');
   const contentBox = document.querySelector('#content-box');
-  
+
   btnBox.addEventListener('click', function() {
-    if(!btnBox.classList.contains('active')) {
-      
+    if (!btnBox.classList.contains('active')) {
+
       btnBox.classList.add('active');
       btnBox.innerHTML = "&uarr;"
       contentBox.classList.remove('hidden');
       setTimeout(function() {
         contentBox.classList.remove('-translate-y-full');
       }, 20);
-      
+
     } else {
-      
+
       btnBox.classList.remove('active');
       btnBox.innerHTML = "&darr;"
       contentBox.classList.add('-translate-y-full');
       setTimeout(function() {
         contentBox.classList.add('hidden');
       }, 200);
-      
+
     }
   });
-  
+
 </script>
 @endsection

@@ -2,9 +2,9 @@
 
 @section('content')
     <div class="w-full h-full bg-gray-200">
-        <div class="h-full md:w-96 px-5 py-10 bg-gray-200 mx-auto
-        ">
-            <h1 class="text-3xl text-center mt-10 uppercase text-gray-700 font-bold"><span class="text-white px-4 py-2 bg-gray-700">FU</span> Registration</h1>
+        <div class="absolute inset-0 md:w-96 px-5 py-10 bg-gray-200 mx-auto">
+            <h1 class="text-3xl text-center mt-10 uppercase text-gray-700 font-bold">Get Started</h1>
+            <p class="text-sm text-gray-500 text-center">Create a new account</p>
             <form class="mt-20 space-y-4" action="/register" method="post" autocomplete="off">
                 @csrf
                 <div class="flex items-center">

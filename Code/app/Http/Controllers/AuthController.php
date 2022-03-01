@@ -49,23 +49,25 @@ class AuthController extends Controller
       "password" => $allData["password"]
     ]);
     
-    return redirect('/login')->with('status', 'Registration Complete! You can Login now');
+    return redirect('/login')->with('statusRegistration', 'Registration Complete!');
   }
 
   // logic login terkutuk
   public function authLogin(Request $request) {
+    $remember = $request["remember-me"] == null ? false : true;
+    // dd($remember);
     $credentials = $request->validate([
       "username" => ["required"],
       "password" => ["required"]
     ]);
 
-    if (Auth::attempt($credentials)) {
+    if (Auth::attempt($credentials, $remember)) {
       $request->session()->regenerate();
 
       return redirect()->intended('/home');
     }
 
-    return back()->with("gagal", "Login Failed! Maybe the Username or Password is wrong");
+    return back()->with("loginFailed", "Username or Password is wrong!");
   }
 
   public function logout(Request $request) {
@@ -81,6 +83,14 @@ class AuthController extends Controller
   public function checkout(Request $request)
   {
     // dd($request->all());
+    $request = $request->validate([
+      "user" => ["required"],
+      "book" => ["required"],
+      "items" => ["required"],
+      "wallet" => ["required"],
+      "total" => ["required"]
+    ]);
+    
     Order::create([
       "user_id" => $request["user"],
       "book_id" => $request["book"],

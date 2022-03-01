@@ -9,6 +9,7 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use App\Models\Jurusan;
 use App\Models\Order;
+use App\Models\Bookmark;
 
 class User extends Authenticatable
 {
@@ -49,4 +50,10 @@ class User extends Authenticatable
     {
       return $this->hasMany(Order::class);
     }
+    
+    public function bookmark()
+    {
+      return $this->hasMany(Bookmark::class);
+    }
+    
 }

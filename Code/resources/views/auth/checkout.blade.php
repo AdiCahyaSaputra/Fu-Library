@@ -9,9 +9,17 @@
 
 @if(session("checkout"))
 <div class="rounded-md flex justify-between items-center my-2 pl-4 pr-2 py-2 text-sm bg-green-700 text-white font-semibold ">
-  Checkout succed!
-  <p class="p-2 rounded-md inline-block w-max bg-white text-gray-700 text-xs">Details</p>
+  {{ session("checkout") }}
+  <a href="/orders/all" class="p-2 rounded-md inline-block w-max bg-white text-gray-700 text-xs hover:bg-white/70">Details</a>
 </div>
+@endif
+
+@if($errors->any())
+@error('wallet')
+<div class="rounded-md flex justify-between items-center my-2 pl-4 pr-2 py-2 text-sm bg-red-700 text-white font-semibold ">
+  {{ $message }}
+</div>
+@enderror
 @endif
 
 <form action="/checkout" method="post">
@@ -75,7 +83,7 @@
     <input type="hidden" name="items" id="inputItems" value="1" required>
     <input type="hidden" name="total" id="inputTotal" value="{{ $book->price }}" required>
     <input type="hidden" name="wallet" id="inputWallet" value="" required>
-    <input required type="number" class="placeholder-gray-500 text-gray-500 px-2 py-1 mt-2 border border-gray-400 rounded-md w-full outline-none">
+    <input value="{{ old('numCard') }}" name="numCard" required type="number" class="placeholder-gray-500 text-gray-500 px-2 py-1 mt-2 border border-gray-400 rounded-md w-full outline-none">
     <button type="submit" class="py-2 px-4 bg-gray-500 text-white font-semibold text-center mt-2 w-full text-xs rounded-md hover:bg-gray-600">Checkout!</button>
   </div>
 </form>

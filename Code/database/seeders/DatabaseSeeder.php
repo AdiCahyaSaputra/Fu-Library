@@ -8,6 +8,7 @@ use App\Models\Book;
 use App\Models\User;
 use App\Models\Category;
 use App\Models\Order;
+use App\Models\Bookmark;
 
 class DatabaseSeeder extends Seeder
 {
@@ -72,7 +73,7 @@ class DatabaseSeeder extends Seeder
         "author" => "Chinua Achebe",
         "year" => 1958,
         "pages" => 209,
-        "price" => 499
+        "price" => 45000
       ]);
       Book::create([
         "category_id" => 1,
@@ -83,7 +84,7 @@ class DatabaseSeeder extends Seeder
         "author" => "Hans Christian Andersen",
         "year" => 1836,
         "pages" => 784,
-        "price" => 479
+        "price" => 30000
       ]);
       Book::create([
         "category_id" => 3,
@@ -94,7 +95,7 @@ class DatabaseSeeder extends Seeder
         "author" => "Dante Alighieri",
         "year" => 1315,
         "pages" => 928,
-        "price" => 322
+        "price" => 100000
       ]);
       Book::create([
         "category_id" => 4,
@@ -105,7 +106,7 @@ class DatabaseSeeder extends Seeder
         "author" => "Jane Auston",
         "year" => 1813,
         "pages" => 226,
-        "price" => 576
+        "price" => 75000
       ]);
       Book::create([
         "category_id" => 4,
@@ -116,7 +117,7 @@ class DatabaseSeeder extends Seeder
         "author" => "Jorge Luis Borges",
         "year" => 1965,
         "pages" => 224,
-        "price" => 335
+        "price" => 65000
       ]);
       Book::create([
         "category_id" => 5,
@@ -127,7 +128,7 @@ class DatabaseSeeder extends Seeder
         "author" => "Giovanni Boccaccio",
         "year" => 1351,
         "pages" => 1024,
-        "price" => 298
+        "price" => 28000
       ]);
       
       // User
@@ -140,13 +141,28 @@ class DatabaseSeeder extends Seeder
       ]);
       User::create([
         "jurusan_id" => 3,
-        "username" => "adijs",
-        "name" => "Adi Cahyadi",
+        "username" => "user",
+        "name" => "Super User",
         "class" => "X",
         "password" => bcrypt("password")
       ]);
       
-      // Rent
+      // Bookmark
+      Bookmark::create([
+        "user_id" => 1,
+        "book_id" => 2
+      ]);
+      Bookmark::create([
+        "user_id" => 1,
+        "book_id" => 1
+      ]);
+      Bookmark::create([
+        "user_id" => 2,
+        "book_id" => 2
+      ]);
+      
+      // Order
+      /**
       Order::create([
         "user_id" => 1,
         "book_id" => 4,
@@ -171,6 +187,7 @@ class DatabaseSeeder extends Seeder
         "totalItems" => 0,
         "totalPrice" => 0
       ]);
+      **/
         // \App\Models\User::factory(10)->create();
     }
 }

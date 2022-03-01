@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Book;
 use App\Models\Category;
 use App\Models\Order;
+use App\Models\Bookmark;
 
 class MainController extends Controller
 {
@@ -16,91 +17,69 @@ class MainController extends Controller
       "book" => $book
     ]);
   }
-
-  public function addBookmark($bookId) {
-    // write order info in json files
-    $path = base_path("public/order/bookmarkInfo.json");
-    $content = json_decode(file_get_contents($path), true);
-
-    $book = Book::find($bookId);
-
-    $content[] = [
-      "book_id" => $book->id,
-      "tittle" => $book->tittle,
-      "image" => $book->image,
-      "slug" => $book->slug,
-      "author" => $book->author,
-      "desc" => $book->desc,
-      "year" => $book->year,
-      "pages" => $book->pages,
-      "price" => $book->price
-    ];
-
-    $newContent = json_encode($content, JSON_PRETTY_PRINT);
-    file_put_contents($path, stripcslashes($newContent));
-
-    return redirect()->back();
+  
+  public function bookmark()
+  {
+    $bookmark = Bookmark::with(["user", "book"])->where("user_id", auth()->user()->id)->get();
+    return view('main.bookmark', [
+      "tittle" => "Bookmark",
+      "bookmarks" => $bookmark
+    ]);
+  }
+  
+  public function credits()
+  {
+    return view('main.credits', [
+      "tittle" => "Credits"
+    ]);
   }
 
-  public function cancelBookmark($bookId) {
-    // write order info in json files
-    $path = base_path("public/order/bookmarkInfo.json");
-    $content = json_decode(file_get_contents($path), true);
-
-    foreach ($content as $index => $value) {
-      // [0] => {}
-      if ($value["book_id"] == $bookId) {
-        // jika true hapus array nya
-        unset($content[$index]);
-        break;
-      }
-    }
-
-    $newContent = json_encode($content, JSON_PRETTY_PRINT);
-    file_put_contents($path, stripcslashes($newContent));
-
-    return redirect()->back();
+  public function addBookmark(Book $book) {
+    Bookmark::create([
+      "user_id" => auth()->user()->id,
+      "book_id" => $book->id
+    ]);
+    return back()->with("add", "This book has been Bookmarked");
   }
 
-  // rent a book
-  public function bookmark(Request $request) {
-
-    if ($request["add"]) {
-      return $this->addBookmark($request["book_id"]);
-    }
-    if ($request["cancel"]) {
-      return $this->cancelBookmark($request["book_id"]);
-    }
-
+  public function cancelBookmark(Book $book) {
+    Bookmark::where([
+      ["book_id", $book->id],
+      ["user_id", auth()->user()->id]
+    ])->delete();
+    return back()->with("cancel", "Bookmark for this book has been deleted!");
   }
 
   public function home(Request $request) {
-
-    // ambil data buku terbaru
-    $book = Book::latest()->limit(10)->get();
-
+    $book;
+    $newBook = 0;
+    $category = 0;
     // jika ada request di url (get) yg isi nya search
     if ($request["search"]) {
       // ambil data buku (urut dari yang terbaru) + query berdasarkan search (ada di scopeSearch() Models Book)
       $book = Book::latest()->search()->get();
+    } else {
+      // ambil data buku terbaru
+      $book = Book::latest()->limit(10)->get();
+      $newBook = Book::latest()->limit(3)->get();
+      $category = Category::all();
     }
-
+    
     // View nya
     return view('main.home', [
       "tittle" => "Home",
-      "newBooks" => Book::latest()->limit(3)->get(),
-      "categories" => Category::all(),
+      "newBooks" => $newBook,
+      "categories" => $category,
       "books" => $book
     ]);
   }
 
   public function category(Category $category) {
 
-    $categories = Category::with("book")->get();
+    $categories = Category::all();
 
     return view("main.home", [
       "tittle" => "Home",
-      "newBooks" => Book::latest()->limit(3)->get(),
       "categories" => $categories,
       "books" => $category->book
     ]);
@@ -109,15 +88,16 @@ class MainController extends Controller
   public function singleBook(Book $book) {
     // default nya si bookmarkStatus = false
     $bookmarkStatus = false;
-    // write order info in json files
-    $path = base_path("public/order/bookmarkInfo.json");
-    $content = json_decode(file_get_contents($path), true);
-    foreach ($content as $c) {
-      // cek di tiap² content di file json
-      if ($book->id == $c["book_id"]) {
-        $bookmarkStatus = true;
-      }
+
+    $bm = Bookmark::where([
+      ["book_id", $book->id],
+      ["user_id", auth()->user()->id]
+    ])->get();
+
+    if (count($bm) > 0) {
+      $bookmarkStatus = true;
     }
+
     // set token Csrf
     return view('main.book', [
       "tittle" => "Book",
@@ -127,9 +107,10 @@ class MainController extends Controller
   }
 
   public function orderHistory($m) {
-    $m = ucfirst($m);
-    $order = Order::with(["book", "user"])->get();
-    $or = [];
+    $monthURL = ucfirst($m);
+    $tmpOrder = Order::with(["book", "user"])->where('user_id', auth()->user()->id)->get();
+
+    $order = [];
     $month = ["Jan",
       "Feb",
       "Mar",
@@ -142,25 +123,27 @@ class MainController extends Controller
       "Oct",
       "Nov",
       "Des"];
-      
-    if ($m != "All") {
-      foreach ($month as $mon) {
-        foreach ($order as $o) {
-          if ($m == $mon && $mon == date("M", strtotime($o->orderDate))) {
-            $or = Order::where("orderDate", $o->orderDate)->get();
-          } 
+    
+    //dd($order);
+    
+    if ($monthURL != "All") {
+      foreach ($month as $m) {
+        foreach ($tmpOrder as $o) {
+          if ($monthURL == $m && $m == date("M", strtotime($o->orderDate))) {
+            $order[] = $o;
+          }
         }
       }
-    } 
-    
-    if($m == "All") {
-      $or = $order;
     }
 
+    if ($monthURL == "All") {
+      $order = $tmpOrder;
+    }
+    
     return view('main.orders', [
       "tittle" => "Order History",
       "month" => $month,
-      "orders" => $or
+      "orders" => $order
     ]);
   }
 }
